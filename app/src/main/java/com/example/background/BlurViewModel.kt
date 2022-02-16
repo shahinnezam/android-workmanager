@@ -68,13 +68,17 @@ class BlurViewModel(application: Application) : ViewModel() {
      * @param blurLevel The amount to blur the image
      */
     internal fun applyBlur(blurLevel: Int) {
+        workManager.enqueue(OneTimeWorkRequest.from(BlurWorker::class.java))
+
         // Add WorkRequest to Cleanup temporary images
         var continuation = workManager
             .beginUniqueWork(
                 IMAGE_MANIPULATION_WORK_NAME,
                 ExistingWorkPolicy.REPLACE,
                 OneTimeWorkRequest.from(CleanupWorker::class.java)
+
             )
+
 
         // Add WorkRequests to blur the image the number of times requested
         for (i in 0 until blurLevel) {
@@ -104,6 +108,8 @@ class BlurViewModel(application: Application) : ViewModel() {
 
         // Actually start the work
         continuation.enqueue()
+
+        }
     }
 
     private fun uriOrNull(uriString: String?): Uri? {
@@ -126,9 +132,9 @@ class BlurViewModel(application: Application) : ViewModel() {
     }
 
     internal fun setOutputUri(outputImageUri: String?) {
-        outputUri = uriOrNull(outputImageUri)
+        val outputUri = uriOrNull(outputImageUri)
     }
-}
+
 
 class BlurViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
 
