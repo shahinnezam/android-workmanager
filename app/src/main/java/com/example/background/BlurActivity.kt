@@ -75,7 +75,6 @@ class BlurActivity : AppCompatActivity() {
                 // Normally this processing, which is not directly related to drawing views on
                 // screen would be in the ViewModel. For simplicity we are keeping it here.
                 val outputImageUri = workInfo.outputData.getString(KEY_IMAGE_URI)
-
                 // If there is an output file show "See File" button
                 if (!outputImageUri.isNullOrEmpty()) {
                     BlurViewModel.setOutputUri(outputImageUri)
